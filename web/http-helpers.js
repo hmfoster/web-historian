@@ -9,7 +9,7 @@ var mimeTypes = {
 };
 
 exports.headers = function(lookup){
-  
+
   return {
     "access-control-allow-origin": "*",
     "access-control-allow-methods": "GET, POST, PUT, DELETE, OPTIONS",

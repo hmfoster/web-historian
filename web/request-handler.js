@@ -16,7 +16,6 @@ exports.handleRequest = function (req, res) {
     if (req.url === '/') {
       url = archive.paths.siteAssets + '/index.html';
     } else if (req.url === '/styles.css'){
-      console.log("STYLE");
       url = archive.paths.siteAssets + '/styles.css';
 
     }
