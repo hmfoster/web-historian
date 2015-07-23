@@ -47,6 +47,7 @@ exports.handleRequest = function (req, res) {
     req.on('end',function(){
       sendResponse(res, req, 302);
       url = archive.paths.archivedSites + dataString;
+      // MAKE SURE TO PARSE STRING TO MATCH FILE NAME PROPERLY
       fs.exists(url, function(exists){
         if (exists) {
           httpHelper.serveAssets(res, url, function(data){
@@ -54,6 +55,7 @@ exports.handleRequest = function (req, res) {
           });
         }
         else {
+          // use helper isUrlInList to determine if need to add to list
           archive.addUrlToList(dataString);
           url = archive.paths.siteAssets+"/loading.html";
           httpHelper.serveAssets(res, url, function(data){

@@ -33,7 +33,6 @@ exports.readListOfUrls = function(callback){
     data = data.toString().split('\n');
     callback(data);
   });
-
 };
 
 exports.isUrlInList = function(){
@@ -50,8 +49,18 @@ exports.addUrlToList = function(dataString){
   });
 };
 
-exports.isURLArchived = function(){
+exports.isURLArchived = function(url){
+  fs.exists(url, function(exists){
+    return exists;
+  });
 };
 
-exports.downloadUrls = function(){
+exports.downloadUrls = function(url){
+  // submit get request to URL (maybe using library?)
+  // download their html
+  // save new html to a file kept in sites/
+
 };
+
+
+
