@@ -4,7 +4,10 @@ var archive = require('../helpers/archive-helpers');
 var httpHelper = require('./http-helpers.js');
 var fs = require('fs');
 
-//make sendResponse helper; includes setting statusCode and headers
+var sendResponse = function(res, statusCode) {
+  statusCode = statusCode || 200;
+  res.writeHead(statusCode, httpHelper.headers);
+};
 
 exports.handleRequest = function (req, res) {
 
@@ -15,41 +18,54 @@ exports.handleRequest = function (req, res) {
     } else {
       url = archive.paths.archivedSites + req.url;
     }
+    //chek if url exists, if not serve 404
+    fs.exists(url, function(exists){
+      if (exists) {
+        sendResponse(res);
+        httpHelper.serveAssets(res, url, res.end);
+      } else {
+        sendResponse(res, 404);
+        res.end();
+      }
+    });
 
-    var statusCode = 200;
-    res.writeHead(statusCode, httpHelper.headers);
-    httpHelper.serveAssets(res, url, res.end);
+    // try{
+    //   console.log("TRY BLOCK");
+    //   sendResponse(res);
+    //   httpHelper.serveAssets(res, url, res.end);
+    // } catch(err){
+    //   console.log('ERROR!!!!!');
+    // }
+    //WHY DOESN"T THIS WORK? The catch doesn't happen
   }
-  //check for POST req.method
   else if (req.method === 'POST'){
-    //set event listener for on data
+    sendResponse(res, 302);
     var dataString = '';
+
     req.on('data',function(chunk){
-      //build up data string with chunks
       dataString +=chunk.toString();
     });
-    //update statusCode to 302
-    //statusCode = 302;
-    //write header as before
-    res.writeHead(302, httpHelper.headers);
-    //set event listener for on end
+
     req.on('end',function(){
-      dataString = dataString.split('=')[1]+"\n";
-      //write data to file --> use appendFile, passing in data
-      fs.appendFile(archive.paths.list, dataString, function(err){
-        if (err){
-          throw err;
-        }
-      });
+      archive.addUrlToList(dataString);
       res.end();
     });
-      //end response --> as a callback to append???
-    }
+  }
+
+  // default
   res.end(archive.paths.list);
 };
 
-// add to archive-helpers
-// fs.appendFile('message.txt', 'data to append', function (err) {
-//   if (err) throw err;
-//   console.log('The "data to append" was appended to file!');
+
+// fs.exists('/etc/passwd', function (exists) {
+//   util.debug(exists ? "it's there" : "no passwd!");
 // });
+
+// try {
+  // if...
+  // serveAssets -> throws error, goes to catch
+// }
+// catch (ex) {
+  // error logic exists -> handling 404
+  // console.error("outer", ex.message);
+// }

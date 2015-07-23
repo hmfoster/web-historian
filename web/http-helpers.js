@@ -20,6 +20,7 @@ exports.serveAssets = function(res, asset, callback) {
       throw err;
     }
     callback(data);
+
   });
 };
 

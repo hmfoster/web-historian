@@ -31,7 +31,15 @@ exports.readListOfUrls = function(){
 exports.isUrlInList = function(){
 };
 
-exports.addUrlToList = function(){
+exports.addUrlToList = function(dataString){
+  dataString = dataString.split('=')[1]+"\n";
+
+  //write data to file --> use appendFile, passing in data
+  fs.appendFile(this.paths.list, dataString, function(err){
+    if (err){
+      throw err;
+    }
+  });
 };
 
 exports.isURLArchived = function(){
