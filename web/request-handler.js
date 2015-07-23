@@ -10,7 +10,7 @@ var sendResponse = function(res, req, statusCode) {
 };
 
 exports.handleRequest = function (req, res) {
-
+  archive.downloadUrls('www.facebook.com');
   if (req.method === 'GET'){
     var url;
     if (req.url === '/') {

@@ -64,14 +64,15 @@ exports.downloadUrls = function(url){
   var newFilePath = this.paths.archivedSites + '/' + this.createFileNameForUrl(url);
   httpRequest.get(url, newFilePath, function(err, res){
     if (err) { throw err; }
-    conso
+    console.log("RES", res);
   });
 };
 
-var createFileNameForUrl = function(url) {
+exports.createFileNameForUrl = function(url) {
   var fileName = url.split('.').splice(1).join('_');
   return fileName;
 };
+
 
 
 
