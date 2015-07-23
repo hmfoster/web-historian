@@ -29,14 +29,15 @@ exports.handleRequest = function (req, res) {
         httpHelper.serveAssets(res, url, function(data){
           res.end(data);
         });
-      } else {
+      }
+
+      else {
         sendResponse(res, req, 404);
-        res.end('not allowed');
+        res.end('404: not allowed');
       }
     });
   }
   else if (req.method === 'POST'){
-    sendResponse(res, req, 302);
     var dataString = '';
 
     req.on('data',function(chunk){
@@ -44,9 +45,22 @@ exports.handleRequest = function (req, res) {
     });
 
     req.on('end',function(){
-      archive.addUrlToList(dataString);
-      res.end();
+      sendResponse(res, req, 302);
+      url = archive.paths.archivedSites + dataString;
+      fs.exists(url, function(exists){
+        if (exists) {
+          httpHelper.serveAssets(res, url, function(data){
+            res.end(data);
+          });
+        }
+        else {
+          archive.addUrlToList(dataString);
+          url = archive.paths.siteAssets+"/loading.html";
+          httpHelper.serveAssets(res, url, function(data){
+            res.end(data);
+          });
+        }
+      });
     });
   }
-
 };
