@@ -47,6 +47,7 @@ exports.handleRequest = function (req, res) {
     req.on('end',function(){
       sendResponse(res, req, 302);
       url = archive.paths.archivedSites + dataString;
+
       // MAKE SURE TO PARSE STRING TO MATCH FILE NAME PROPERLY
       fs.exists(url, function(exists){
         if (exists) {
