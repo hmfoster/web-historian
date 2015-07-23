@@ -4,9 +4,9 @@ var archive = require('../helpers/archive-helpers');
 var httpHelper = require('./http-helpers.js');
 var fs = require('fs');
 
-var sendResponse = function(res, statusCode) {
+var sendResponse = function(res, req, statusCode) {
   statusCode = statusCode || 200;
-  res.writeHead(statusCode, httpHelper.headers);
+  res.writeHead(statusCode, httpHelper.headers(req.url));
 };
 
 exports.handleRequest = function (req, res) {
@@ -15,31 +15,29 @@ exports.handleRequest = function (req, res) {
     var url;
     if (req.url === '/') {
       url = archive.paths.siteAssets + '/index.html';
-    } else {
+    } else if (req.url === '/styles.css'){
+      console.log("STYLE");
+      url = archive.paths.siteAssets + '/styles.css';
+
+    }
+    else {
       url = archive.paths.archivedSites + req.url;
     }
     //chek if url exists, if not serve 404
     fs.exists(url, function(exists){
       if (exists) {
-        sendResponse(res);
-        httpHelper.serveAssets(res, url, res.end);
+        sendResponse(res, req);
+        httpHelper.serveAssets(res, url, function(data){
+          res.end(data);
+        });
       } else {
-        sendResponse(res, 404);
-        res.end();
+        sendResponse(res, req, 404);
+        res.end('not allowed');
       }
     });
-
-    // try{
-    //   console.log("TRY BLOCK");
-    //   sendResponse(res);
-    //   httpHelper.serveAssets(res, url, res.end);
-    // } catch(err){
-    //   console.log('ERROR!!!!!');
-    // }
-    //WHY DOESN"T THIS WORK? The catch doesn't happen
   }
   else if (req.method === 'POST'){
-    sendResponse(res, 302);
+    sendResponse(res, req, 302);
     var dataString = '';
 
     req.on('data',function(chunk){
@@ -52,20 +50,4 @@ exports.handleRequest = function (req, res) {
     });
   }
 
-  // default
-  res.end(archive.paths.list);
 };
-
-
-// fs.exists('/etc/passwd', function (exists) {
-//   util.debug(exists ? "it's there" : "no passwd!");
-// });
-
-// try {
-  // if...
-  // serveAssets -> throws error, goes to catch
-// }
-// catch (ex) {
-  // error logic exists -> handling 404
-  // console.error("outer", ex.message);
-// }
