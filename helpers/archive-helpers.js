@@ -57,20 +57,15 @@ exports.isURLArchived = function(url){
 };
 
 exports.downloadUrls = function(url){
-  // submit get request to URL (maybe using library?)
-  //make path w/filename
-  // download their html
-  // save new html to a file kept in sites/
-  var newFilePath = this.paths.archivedSites + '/' + this.createFileNameForUrl(url);
+  var newFilePath = this.paths.archivedSites + this.createFileNameForUrl(url);
   httpRequest.get(url, newFilePath, function(err, res){
-    if (err) { throw err; }
-    console.log("RES", res);
+    if (err) { console.log(err); }
   });
 };
 
 exports.createFileNameForUrl = function(url) {
   var fileName = url.split('.').splice(1).join('_');
-  return fileName;
+  return '/' + fileName;
 };
 
 

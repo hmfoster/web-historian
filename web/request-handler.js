@@ -10,7 +10,7 @@ var sendResponse = function(res, req, statusCode) {
 };
 
 exports.handleRequest = function (req, res) {
-  archive.downloadUrls('www.facebook.com');
+  // archive.downloadUrls('www.facebook.com');
   if (req.method === 'GET'){
     var url;
     if (req.url === '/') {
@@ -46,7 +46,8 @@ exports.handleRequest = function (req, res) {
 
     req.on('end',function(){
       sendResponse(res, req, 302);
-      url = archive.paths.archivedSites + dataString;
+      var fileName = archive.createFileNameForUrl(dataString);
+      url = archive.paths.archivedSites + fileName;
 
       // MAKE SURE TO PARSE STRING TO MATCH FILE NAME PROPERLY
       fs.exists(url, function(exists){

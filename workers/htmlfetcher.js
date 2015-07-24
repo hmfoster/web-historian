@@ -12,14 +12,10 @@ var _ = require('underscore');
       // else, call downloadurls helper (which may call http-get library)
         // downloads and saves to sites/
 
-var resultArray;
-
 archive.readListOfUrls(function(urls){
-  resultArray = urls;
-});
-
-_.each(resultArray, function(url){
-  if (!archive.isURLArchived(url)) {
-    archive.downloadUrls(url);
-  }
+  _.each(urls, function(url){
+    if (!archive.isURLArchived(url) || url === '') {
+      archive.downloadUrls(url);
+    }
+  });
 });
