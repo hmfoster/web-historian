@@ -32,18 +32,21 @@ exports.readListOfUrls = function(callback){
       throw err;
     }
     data = data.toString().split('\n');
-    callback(data);
+    return callback(data);
   });
 };
 
-exports.isUrlInList = function(){
+exports.isUrlInList = function(url){
+  return this.readListOfUrls(function(urls){
+    return _.indexOf(url, urls) !== -1;
+  });
 };
 
-exports.addUrlToList = function(dataString){
-  dataString = dataString.split('=')[1]+"\n";
+exports.addUrlToList = function(url){
+  url = url+"\n";
 
   //write data to file --> use appendFile, passing in data
-  fs.appendFile(this.paths.list, dataString, function(err){
+  fs.appendFile(this.paths.list, url, function(err){
     if (err){
       throw err;
     }
@@ -51,7 +54,8 @@ exports.addUrlToList = function(dataString){
 };
 
 exports.isURLArchived = function(url){
-  fs.exists(url, function(exists){
+  //maybe not exactly this
+  return fs.exists(url, function(exists){
     return exists;
   });
 };
@@ -59,7 +63,7 @@ exports.isURLArchived = function(url){
 exports.downloadUrls = function(url){
   var newFilePath = this.paths.archivedSites + this.createFileNameForUrl(url);
   httpRequest.get(url, newFilePath, function(err, res){
-    if (err) { console.log(err); }
+    console.log('downloading ',url);
   });
 };
 

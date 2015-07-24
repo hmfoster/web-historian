@@ -1,5 +1,6 @@
 var fs = require('fs');
-
+var CronJob = require('../node_modules/cron/').CronJob;
+var htmlScript = require('../workers/htmlfetcher.js');
 // Sync is ok here because this is called just once on startup.
 module.exports = function () {
   // if the archive folder doesn't exist, create it.
@@ -20,4 +21,5 @@ module.exports = function () {
     // We use fs.mkdirSync to create the folder
     fs.mkdirSync("./archives/sites");
   }
+  new CronJob('* 1 * * * *', htmlScript.htmlFetch);
 };

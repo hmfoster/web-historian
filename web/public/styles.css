@@ -2,3 +2,23 @@ body {
   margin : 0px;
   font-family: arial, sans-serif;
 }
+
+.form {
+  padding: 10px;
+  border: #aaaaaa solid 2px;
+  border-radius: 5px;
+  background-color: #1E1ABB;
+  color: white;
+  margin: 50px auto;
+  width: 40%;
+}
+p{
+  font-weight: bold;
+  font-size: 18px;
+  text-align: center;
+}
+
+input{
+  width: 99%;
+  line-height: 30px;
+}
